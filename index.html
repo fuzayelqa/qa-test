@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FuzayelQA - Comprehensive SQA Functional Testing Sandbox</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #10b981; /* Emerald 500 */
+            --secondary-color: #374151; /* Gray 700 */
+            --bg-color: #f9fafb; /* Gray 50 */
+            --border-color: #e5e7eb; /* Gray 200 */
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+        }
+        .code-snippet {
+            max-height: 400px;
+            overflow-y: auto;
+            border-left: 4px solid var(--primary-color);
+        }
+        /* Custom scrollbar for aesthetics */
+        .code-snippet::-webkit-scrollbar { width: 6px; }
+        .code-snippet::-webkit-scrollbar-thumb { background-color: #6b7280; border-radius: 3px; }
+        .code-snippet::-webkit-scrollbar-track { background-color: #f3f4f6; }
+
+        .sandbox-area {
+            border: 1px solid var(--border-color);
+            min-height: 2000px; /* Increased height to fit all new components */
+            position: relative;
+        }
+
+        /* Drag and Drop Styling */
+        #draggable {
+            width: 100px;
+            height: 100px;
+            background-color: #f97316; /* Orange */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: grab;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.2s;
+            z-index: 10; /* Ensure draggable is on top */
+        }
+        .droppable-target {
+            width: 200px;
+            height: 120px;
+            border: 2px dashed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            margin-top: 150px;
+            position: relative;
+            /* Added transition for dynamic effect */
+            transition: all 0.2s ease-out; 
+        }
+        #droppable-1 {
+            background-color: #d1fae5; /* Green light */
+            border-color: #059669; /* Green dark */
+        }
+        #droppable-2 {
+            background-color: #fee2e2; /* Red light */
+            border-color: #ef4444; /* Red dark */
+            margin-left: 220px; /* Place next to droppable 1 */
+        }
+        /* Dynamic Hovering Style */
+        .droppable-target.hovering {
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6); /* Primary color glow */
+            transform: scale(1.05);
+            border-style: solid;
+        }
+        .dropped-success {
+            background-color: #34d399 !important; /* Emerald medium */
+            box-shadow: 0 0 10px #10b981;
+        }
+        .dropped-failure {
+            background-color: #f87171 !important; /* Red medium */
+            box-shadow: 0 0 10px #ef4444;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="text-center mb-10 p-6 bg-white shadow-lg rounded-xl">
+        <h1 id="main-title" class="text-4xl font-extrabold text-gray-900 tracking-tight transition duration-300">FuzayelQA</h1>
+        <p class="text-xl text-gray-600 mt-2">Comprehensive SQA Functional Testing Sandbox for WebDriver & Pytest Practice</p>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+        <!-- Testing Sandbox Area (The Application Under Test) -->
+        <section class="p-6 bg-white rounded-xl shadow-2xl sandbox-area">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">1. The Testing Sandbox (Application Under Test)</h2>
+            <p class="text-sm text-gray-500 mb-6">Test your external Selenium scripts against these elements. Use the Code Reference section to quickly see the Python code needed for interaction.</p>
+
+            <!-- Test Case: Login Form & Search Box -->
+            <div class="mb-8 p-4 border rounded-lg bg-red-50 border-red-200">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Login & Search Test (ID/Name Locators)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Login Form -->
+                    <div class="p-3 bg-white rounded-md shadow">
+                        <input type="text" id="username-field" name="username" placeholder="Username (testuser)"
+                               class="w-full mb-2 px-3 py-2 border rounded-lg focus:ring-red-500 focus:border-red-500">
+                        <input type="password" id="password-field" name="password" placeholder="Password (testpass)"
+                               class="w-full mb-3 px-3 py-2 border rounded-lg focus:ring-red-500 focus:border-red-500">
+                        <button id="login-button" class="w-full px-5 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700">
+                            Login
+                        </button>
+                        <p id="login-status" class="mt-2 text-sm text-red-700 font-medium">Ready to login.</p>
+                        <p class="mt-2 text-xs text-gray-400">Locators: `id="username-field"`, `name="password"`, `id="login-button"`</p>
+                    </div>
+                    
+                    <!-- Search Box -->
+                    <div class="p-3 bg-white rounded-md shadow">
+                        <input type="text" id="search-box" data-qa="search-input" placeholder="Search for anything..."
+                               class="w-full mb-3 px-3 py-2 border rounded-lg focus:ring-red-500 focus:border-red-500">
+                        <button id="search-button" class="w-full px-5 py-2 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600">
+                            Go
+                        </button>
+                        <p id="search-result" class="mt-2 text-sm text-gray-700 font-medium">Search ready.</p>
+                        <p class="mt-2 text-xs text-gray-400">Locators: `id="search-box"`, `data-qa="search-input"`</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Test Case: Select, Radio, Checkboxes & Date -->
+            <div class="mb-8 p-4 border rounded-lg bg-purple-50 border-purple-200">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Data Selection & Checkbox/Radio (CSS Selector)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="country-select" class="block text-sm font-medium text-gray-700">Select Country</label>
+                        <select id="country-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md">
+                            <option value="none">-- Select --</option>
+                            <option value="usa">USA</option>
+                            <option value="can">Canada</option>
+                            <option value="ind">India</option>
+                        </select>
+                        <p id="select-status" class="mt-2 text-sm text-purple-700 font-medium"></p>
+                    </div>
+                    <div>
+                        <label for="date-input" class="block text-sm font-medium text-gray-700">Choose Date</label>
+                        <input type="date" id="date-input" class="mt-1 block w-full pl-3 pr-10 py-2 border rounded-lg focus:ring-purple-500 focus:border-purple-500">
+                        <p id="date-status" class="mt-2 text-sm text-purple-700 font-medium"></p>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <p class="text-sm font-medium text-gray-700 mb-2">Options and Toggles:</p>
+                    <div class="flex items-center space-x-6">
+                        <label class="flex items-center">
+                            <input type="checkbox" data-qa="option-checkbox" name="option-a" value="A" class="h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                            <span class="ml-2 text-sm text-gray-700">Option A</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" data-qa="radio-group" name="group-1" value="Red" class="h-4 w-4 text-purple-600 border-gray-300 focus:ring-purple-500">
+                            <span class="ml-2 text-sm text-gray-700">Red</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" data-qa="radio-group" name="group-1" value="Blue" class="h-4 w-4 text-purple-600 border-gray-300 focus:ring-purple-500">
+                            <span class="ml-2 text-sm text-gray-700">Blue</span>
+                        </label>
+                        <span id="radio-status" class="text-sm text-purple-700 font-medium"></span>
+                    </div>
+                    <p class="mt-2 text-xs text-gray-400">Locators: `id="country-select"`, `[data-qa='option-checkbox']`, `[name='group-1']`</p>
+                </div>
+            </div>
+
+            <!-- Test Case: Table and Data Extraction (XPath) -->
+            <div class="mb-8 p-4 border rounded-lg bg-teal-50 border-teal-200">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Table Data Extraction (XPath Locators)</h3>
+                <table id="data-table" class="min-w-full divide-y divide-teal-200 shadow-sm rounded-lg overflow-hidden">
+                    <thead class="bg-teal-100">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-teal-200" data-qa="table-body">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-qa="row-id">101</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-qa="row-product">Laptop X</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-qa="row-price">$1200.00</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold" data-qa="row-status">Out of Stock</td>
+                        </tr>
+                        <tr class="bg-teal-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" data-qa="row-id">102</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-qa="row-product">Mouse Pro</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" data-qa="row-price">$45.50</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-bold" data-qa="row-status">Available</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="mt-2 text-xs text-gray-400">Locators: `id="data-table"`, XPath: `//table[@id='data-table']//tr[2]/td[2]` (for Mouse Pro)</p>
+            </div>
+
+            <!-- Test Case: Drag and Drop & Slider (ActionChains) (UPDATED) -->
+            <div class="mb-8 p-4 border rounded-lg bg-yellow-50 border-yellow-200 relative min-h-[450px]">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Drag, Drop (Multiple Targets), and Slider Interaction (ActionChains)</h3>
+                
+                <!-- Drag and Drop elements (One Draggable, Two Droppable) -->
+                <div id="drag-drop-container" class="relative pb-10">
+                    <div id="draggable" data-qa="draggable-element">Drag Me!</div>
+                    <div id="droppable-1" data-qa="droppable-target-1" class="droppable-target inline-flex float-left">
+                        Drop Target 1 (Success)
+                        <p class="text-xs font-normal mt-1">ID: droppable-1</p>
+                    </div>
+                    <div id="droppable-2" data-qa="droppable-target-2" class="droppable-target inline-flex float-left ml-4">
+                        Drop Target 2 (Failure)
+                        <p class="text-xs font-normal mt-1">ID: droppable-2</p>
+                    </div>
+                    <p id="drag-status" class="mt-4 text-sm text-yellow-700 font-medium absolute top-0 right-0">Waiting for drop.</p>
+                </div>
+
+                <!-- Slider element -->
+                <div class="mt-8 pt-48 clear-both">
+                    <label for="volume-slider" class="block text-sm font-medium text-gray-700">Volume Slider</label>
+                    <input type="range" id="volume-slider" min="0" max="100" value="50" step="1"
+                           class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-lg focus:outline-none focus:ring-yellow-500 focus:ring-2">
+                    <p id="slider-value" class="mt-2 text-sm text-yellow-700 font-bold">Value: 50</p>
+                    <p class="mt-2 text-xs text-gray-400">Locators: `id="volume-slider"`</p>
+                </div>
+            </div>
+            
+            <!-- Test Case: Alert Modal Simulation (UPDATED) -->
+            <div class="mb-8 p-4 border rounded-lg bg-blue-50 border-blue-200">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Alert/Modal Simulation (Alert, Confirm, Prompt)</h3>
+                
+                <div class="flex flex-col md:flex-row gap-4 mb-6">
+                    <!-- ALERT BUTTONS -->
+                    <button id="show-simple-alert" data-modal-target="simple-modal" class="flex-1 px-5 py-2.5 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700">
+                        1. Simple Alert (OK)
+                    </button>
+                    <button id="show-confirm-alert" data-modal-target="confirm-modal" class="flex-1 px-5 py-2.5 bg-yellow-600 text-white font-medium rounded-lg hover:bg-yellow-700">
+                        2. Confirmation (OK/Cancel)
+                    </button>
+                    <button id="show-prompt-alert" data-modal-target="prompt-modal" class="flex-1 px-5 py-2.5 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700">
+                        3. Prompt (Input Text)
+                    </button>
+                </div>
+                <p id="alert-status" class="text-sm text-blue-700 font-medium text-center mb-4">Alert Action Status: Ready</p>
+            </div>
+            
+            <!-- File Upload and other tests remain here... -->
+            <div class="mb-8 p-4 border rounded-lg bg-blue-50 border-blue-200">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">File Upload Simulation</h3>
+                
+                <div class="flex-1">
+                    <!-- Note: The input type="file" is essential for the Selenium send_keys test -->
+                    <input type="file" id="file-upload" data-qa="file-input" class="hidden">
+                    <label for="file-upload" id="file-upload-label" class="cursor-pointer w-full inline-block text-center px-5 py-2.5 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300">
+                        Simulate File Upload
+                    </label>
+                    <p id="file-status" class="mt-2 text-sm text-blue-700 font-medium">No file selected.</p>
+                    <p class="mt-2 text-xs text-gray-400">Locators: `id="file-upload"`, `data-qa="file-input"`</p>
+                </div>
+            </div>
+
+            <!-- Test Case: IFrame and Frame Switching (NEW) -->
+            <div class="mb-8 p-4 border rounded-lg bg-green-50 border-green-200">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">iFrame/Frame Switching Test</h3>
+                <iframe id="test-iframe" name="iframeName" class="w-full h-40 border-2 border-green-500 rounded-lg bg-white" title="Test IFrame" srcdoc="
+                    <html style='font-family: &quot;Inter&quot;, sans-serif; padding: 10px; background-color: #f0fdf4;'>
+                        <body>
+                            <h5 id='iframe-title' style='color:#065f46;'>Welcome to the Frame!</h5>
+                            <input type='text' id='frame-input' placeholder='Type inside frame' style='border: 1px solid #10b981; padding: 5px; border-radius: 4px; width: 90%;'>
+                            <p id='frame-status' style='font-size: 0.875rem; color:#10b981; margin-top: 8px;'>I'm waiting for input.</p>
+                        </body>
+                    </html>
+                "></iframe>
+                <p id="iframe-status-parent" class="mt-2 text-sm text-green-700 font-medium">Control must switch back to main page.</p>
+                <p class="mt-2 text-xs text-gray-400">Locators: `id="test-iframe"`, XPath: `//iframe[@name='iframeName']`</p>
+            </div>
+            
+            <!-- Test Case: Mouse Actions (Double Click / Right Click) (NEW) -->
+            <div class="mb-8 p-4 border rounded-lg bg-indigo-50 border-indigo-200">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Mouse Actions: Double & Right Click</h3>
+                <div class="flex gap-4">
+                    <button id="double-click-btn" class="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700">
+                        Double Click Me
+                    </button>
+                    <button id="right-click-btn" class="px-5 py-2.5 bg-pink-600 text-white font-medium rounded-lg hover:bg-pink-700">
+                        Right Click Me
+                    </button>
+                </div>
+                <p id="mouse-action-status" class="mt-4 text-sm text-indigo-700 font-medium">No action yet.</p>
+                <p class="mt-2 text-xs text-gray-400">Locators: `id="double-click-btn"`, `id="right-click-btn"`</p>
+            </div>
+
+            <!-- Test Case: Browser Navigation and Download (UPDATED) -->
+            <div class="mb-8 p-4 border rounded-lg bg-orange-50 border-orange-200">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Navigation History & External Link Test</h3>
+                <div class="flex gap-4 items-center flex-wrap">
+                    <a id="nav-link-1" href="#target-page" class="text-orange-600 hover:text-orange-800 font-medium underline">
+                        Go to Target Page
+                    </a>
+                    <!-- NEW EXTERNAL LINK -->
+                    <a id="external-link-2" href="https://alfuzayel.netlify.app/" target="_blank" 
+                       class="text-indigo-600 hover:text-indigo-800 font-medium underline whitespace-nowrap">
+                        Go to Alfuzayel Portfolio
+                    </a>
+                    <!-- These buttons are targets for WebDriver's driver.back()/driver.forward() -->
+                    <button id="nav-back-btn" class="px-4 py-2 border border-orange-400 rounded-lg text-orange-600 hover:bg-orange-100">
+                        Simulate Back
+                    </button>
+                    <button id="nav-forward-btn" class="px-4 py-2 border border-orange-400 rounded-lg text-orange-600 hover:bg-orange-100">
+                        Simulate Forward
+                    </button>
+                </div>
+                <div class="mt-4">
+                    <!-- Standard Download Link Test (uses download attribute) -->
+                    <a id="download-link" href="data:text/plain;charset=utf-8,Selenium%20Test%20Download%20Content" download="test_download.txt" class="inline-block mt-3 px-5 py-2.5 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700">
+                        Download Test File
+                    </a>
+                    <p id="nav-status" class="mt-2 text-sm text-gray-700 font-medium">Click link to change URL hash.</p>
+                    <p class="mt-2 text-xs text-gray-400">Locators: `id="external-link-2"`, `id="download-link"`</p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Code Reference Area (Pytest/Selenium Guide) -->
+        <section class="p-6 bg-white rounded-xl shadow-2xl">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">2. Code Reference (Pytest & Selenium WebDriver)</h2>
+            <p class="text-sm text-gray-500 mb-6">Copy and paste these Pytest code examples to test the Sandbox elements on the left.</p>
+
+            <!-- Snippet 1: Login and Search Test -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 1: Login Form & Search (ID/Name)</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-1">
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+def test_login_and_search(driver):
+    # Locate elements by ID and Name
+    driver.find_element(By.ID, "username-field").send_keys("testuser")
+    driver.find_element(By.NAME, "password").send_keys("testpass")
+    driver.find_element(By.ID, "login-button").click()
+
+    # Assert login success message (assuming server validates)
+    login_status = driver.find_element(By.ID, "login-status").text
+    assert "Login successful" in login_status
+
+    # Search box test using data-qa attribute
+    search_input = driver.find_element(By.CSS_SELECTOR, "[data-qa='search-input']")
+    search_input.send_keys("Selenium Webdriver Tutorial")
+    driver.find_element(By.ID, "search-button").click()
+    
+    search_result = driver.find_element(By.ID, "search-result").text
+    assert "Searching for: Selenium Webdriver Tutorial" in search_result
+</pre>
+                <button onclick="copyCode('snippet-1')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 1</button>
+            </div>
+
+            <!-- Snippet 2: Selection, Checkboxes, Radio & Date -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 2: Select, Checkbox, Radio, Date</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-2">
+from selenium.webdriver.support.ui import Select
+
+def test_form_data_selection(driver):
+    # 1. Dropdown (Select Class)
+    select_element = driver.find_element(By.ID, "country-select")
+    select = Select(select_element)
+    select.select_by_value("ind") # Selects 'India'
+    assert select.first_selected_option.text == "India"
+    
+    # 2. Checkbox (CSS Selector)
+    checkbox = driver.find_element(By.CSS_SELECTOR, "[data-qa='option-checkbox']")
+    if not checkbox.is_selected():
+        checkbox.click()
+    assert checkbox.is_selected()
+    
+    # 3. Radio Buttons (Name attribute)
+    # This demonstrates locating a specific radio button by its value
+    radio_blue = driver.find_element(By.CSS_SELECTOR, "input[name='group-1'][value='Blue']")
+    radio_blue.click()
+    assert radio_blue.is_selected()
+
+    # 4. Date Picker
+    date_field = driver.find_element(By.ID, "date-input")
+    # Note: send_keys is the standard way to input dates in Selenium
+    date_field.send_keys("2026-01-15") 
+    assert date_field.get_attribute("value") == "2026-01-15"
+</pre>
+                <button onclick="copyCode('snippet-2')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 2</button>
+            </div>
+
+            <!-- Snippet 3: Table Data Extraction (XPath) -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 3: Table Data Extraction (XPath)</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-3">
+def test_table_data_extraction(driver):
+    # Locate a specific cell using relative XPath
+    # Target: The price of 'Mouse Pro' ($45.50) in the second row
+    price_cell_xpath = "//table[@id='data-table']//tbody/tr[2]/td[3]"
+    price_element = driver.find_element(By.XPATH, price_cell_xpath)
+    assert price_element.text == "$45.50"
+    
+    # Locate all 'Product' names using a generic XPath
+    product_names = driver.find_elements(By.XPATH, "//td[@data-qa='row-product']")
+    
+    # Assert all products in the list
+    assert [p.text for p in product_names] == ["Laptop X", "Mouse Pro"]
+    
+    # Locate 'Out of Stock' status using attribute filtering
+    out_of_stock_cell = driver.find_element(By.XPATH, "//td[text()='Out of Stock']")
+    assert out_of_stock_cell.is_displayed()
+</pre>
+                <button onclick="copyCode('snippet-3')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 3</button>
+            </div>
+
+            <!-- Snippet 4: Drag and Drop & Slider (ActionChains) (UPDATED) -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 4: Drag and Drop (Target 1) & Slider</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-4">
+from selenium.webdriver.common.action_chains import ActionChains
+
+def test_drag_and_drop_success(driver):
+    actions = ActionChains(driver)
+
+    # 1. Drag and Drop to the SUCCESS target
+    draggable = driver.find_element(By.CSS_SELECTOR, "[data-qa='draggable-element']")
+    droppable_target_1 = driver.find_element(By.CSS_SELECTOR, "[data-qa='droppable-target-1']")
+    
+    # Drag the draggable element onto the first droppable target
+    actions.drag_and_drop(draggable, droppable_target_1).perform()
+    
+    # Assert successful drop (check status element)
+    drag_status = driver.find_element(By.ID, "drag-status").text
+    assert "Dropped successfully onto Target 1" in drag_status
+    
+    # 2. Slider Control (Remains the same)
+    slider = driver.find_element(By.ID, "volume-slider")
+    actions.click_and_hold(slider).move_by_offset(-30, 0).release().perform()
+    
+    slider_value = driver.find_element(By.ID, "slider-value").text
+    print(f"New Slider Value: {slider_value}")
+    assert slider_value != "Value: 50"
+</pre>
+                <button onclick="copyCode('snippet-4')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 4</button>
+            </div>
+
+            <!-- Snippet 5: File Upload -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 5: File Upload Simulation</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-5">
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import os # Necessary for file path
+
+def test_file_upload(driver):
+    # 2. File Upload Simulation
+    upload_input = driver.find_element(By.ID, "file-upload")
+    
+    # CRITICAL: Create a dummy file path (this file must exist on your local machine)
+    # E.g., create a file named 'test_file.txt' in the same directory as your script
+    dummy_file_path = os.path.abspath("test_file.txt") 
+    
+    # Send the absolute file path to the input element
+    upload_input.send_keys(dummy_file_path)
+    
+    # Assert status change on the page
+    file_status = driver.find_element(By.ID, "file-status").text
+    assert "File selected: test_file.txt" in file_status
+</pre>
+                <button onclick="copyCode('snippet-5')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 5</button>
+            </div>
+            
+            <!-- Snippet 6: Frames/iFrames -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 6: iFrame Switching</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-6">
+# Note: You can switch by ID, Name, Index, or WebElement
+def test_iframe_switching(driver):
+    # 1. Switch to the iframe using its Name attribute
+    driver.switch_to.frame("iframeName")
+    
+    # 2. Locate an element and interact with it inside the frame
+    frame_input = driver.find_element(By.ID, "frame-input")
+    frame_input.send_keys("Text sent from Pytest!")
+    
+    # Assert text was sent correctly inside the frame
+    assert "Text sent from Pytest!" in frame_input.get_attribute("value")
+    
+    # 3. Switch back to the main (default) content
+    driver.switch_to.default_content()
+    
+    # 4. Assert an element on the main page (to confirm switch back)
+    parent_status = driver.find_element(By.ID, "iframe-status-parent")
+    parent_status.text = "Control is back to the main page."
+    assert "Control is back" in parent_status.text
+</pre>
+                <button onclick="copyCode('snippet-6')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 6</button>
+            </div>
+            
+            <!-- Snippet 7: Mouse Actions -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 7: Double & Right Click</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-7">
+from selenium.webdriver.common.action_chains import ActionChains
+
+def test_mouse_actions(driver):
+    actions = ActionChains(driver)
+    
+    double_click_btn = driver.find_element(By.ID, "double-click-btn")
+    right_click_btn = driver.find_element(By.ID, "right-click-btn")
+    mouse_status = driver.find_element(By.ID, "mouse-action-status")
+
+    # 1. Test Double Click
+    actions.double_click(double_click_btn).perform()
+    assert "Double Click Performed!" in mouse_status.text
+    
+    # 2. Test Right Click (Context Click)
+    actions.context_click(right_click_btn).perform()
+    assert "Right Click (Context Click) Performed!" in mouse_status.text
+</pre>
+                <button onclick="copyCode('snippet-7')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 7</button>
+            </div>
+
+            <!-- Snippet 8: Navigation & Download (UPDATED) -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 8: Browser History & External Link Test</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-8">
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def test_navigation_and_download(driver):
+    # 1. Test Navigation History (Internal Link)
+    nav_link = driver.find_element(By.ID, "nav-link-1")
+    nav_link.click()
+    assert "#target-page" in driver.current_url
+    
+    driver.back()
+    assert "#target-page" not in driver.current_url
+    driver.forward()
+    assert "#target-page" in driver.current_url
+    
+    # 2. Test External Link (Requires Window Switching)
+    external_link = driver.find_element(By.ID, "external-link-2")
+    current_window = driver.current_window_handle
+    external_link.click()
+    
+    # Wait for new window/tab to open and switch
+    WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
+    new_window = [window for window in driver.window_handles if window != current_window][0]
+    driver.switch_to.window(new_window)
+    
+    # Assert URL in the new tab
+    assert "alfuzayel.netlify.app" in driver.current_url
+    
+    # Close the new tab and switch back
+    driver.close()
+    driver.switch_to.window(current_window)
+    assert "FuzayelQA" in driver.title # Assert we are back on the main page
+
+    # 3. Test Download Link
+    download_link = driver.find_element(By.ID, "download-link")
+    download_link.click() 
+    assert download_link.get_attribute("download") == "test_download.txt"
+</pre>
+                <button onclick="copyCode('snippet-8')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 8</button>
+            </div>
+
+            <!-- Snippet 9: Alert/Modal Handling (NEW) -->
+            <div class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Code Snippet 9: Alert Handling (Accept, Dismiss, Send Keys)</h3>
+                <pre class="code-snippet p-4 text-sm rounded-lg bg-gray-800 text-white" id="snippet-9">
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def test_alert_handling(driver):
+    # 1. Simple Alert (Accept / OK)
+    driver.find_element(By.ID, "show-simple-alert").click()
+    WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, "simple-modal")))
+    # Simulate: driver.switch_to.alert.accept() 
+    driver.find_element(By.ID, "simple-ok").click()
+    alert_status = driver.find_element(By.ID, "alert-status").text
+    assert "Simple Alert: Accepted" in alert_status
+
+    # 2. Confirmation Alert (Dismiss / Cancel)
+    driver.find_element(By.ID, "show-confirm-alert").click()
+    WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, "confirm-modal")))
+    # Simulate: driver.switch_to.alert.dismiss()
+    driver.find_element(By.ID, "confirm-cancel").click()
+    alert_status = driver.find_element(By.ID, "alert-status").text
+    assert "Confirmation Alert: Dismissed" in alert_status
+    
+    # 3. Prompt Alert (Send Keys and Accept / OK)
+    test_input = "Fuzayel Automation"
+    driver.find_element(By.ID, "show-prompt-alert").click()
+    WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, "prompt-modal")))
+    
+    # Simulate: driver.switch_to.alert.send_keys(test_input)
+    driver.find_element(By.ID, "prompt-input").send_keys(test_input)
+    # Simulate: driver.switch_to.alert.accept()
+    driver.find_element(By.ID, "prompt-ok").click()
+
+    alert_status = driver.find_element(By.ID, "alert-status").text
+    assert f"Prompt Alert: Accepted with text: {test_input}" in alert_status
+</pre>
+                <button onclick="copyCode('snippet-9')" class="mt-3 px-4 py-2 bg-secondary-color text-white text-sm rounded-lg hover:bg-gray-700 transition duration-150">Copy Snippet 9</button>
+            </div>
+            
+        </section>
+    </main>
+
+    <footer class="mt-10 p-6 text-center bg-gray-800 text-gray-300 rounded-xl shadow-inner">
+        <p class="text-sm">
+            Developed by 
+            <a href="https://alfuzayel.netlify.app" target="_blank" rel="noopener noreferrer" 
+               class="text-primary-color hover:text-white font-semibold transition duration-150">
+                OZIH UDDIN AL FUZAYEL
+            </a>
+        </p>
+    </footer>
+
+    <!-- ALERT MODAL IMPLEMENTATIONS (Simulating native browser dialogs) -->
+    
+    <!-- Hidden Modal for Simple Alert (Accept / OK) -->
+    <div id="simple-modal" class="modal-overlay fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-xs w-full transform scale-95 opacity-0 transition-all duration-300" data-modal-content>
+            <h4 class="text-xl font-bold text-gray-800 mb-4">Simple Alert</h4>
+            <p class="text-gray-600 mb-6">This message requires acknowledgment.</p>
+            <button id="simple-ok" class="w-full px-5 py-2 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700">
+                OK
+            </button>
+        </div>
+    </div>
+
+    <!-- Hidden Modal for Confirmation Alert (Accept / Dismiss) -->
+    <div id="confirm-modal" class="modal-overlay fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full transform scale-95 opacity-0 transition-all duration-300" data-modal-content>
+            <h4 class="text-xl font-bold text-gray-800 mb-4">Confirmation Alert</h4>
+            <p class="text-gray-600 mb-6">Do you confirm this action? Choose OK or Cancel.</p>
+            <div class="flex justify-end gap-3">
+                <button id="confirm-cancel" class="px-5 py-2 bg-gray-300 text-gray-800 font-medium rounded-lg hover:bg-gray-400">
+                    Cancel
+                </button>
+                <button id="confirm-ok" class="px-5 py-2 bg-yellow-600 text-white font-medium rounded-lg hover:bg-yellow-700">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Modal for Prompt Alert (Send Keys and Accept) -->
+    <div id="prompt-modal" class="modal-overlay fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full transform scale-95 opacity-0 transition-all duration-300" data-modal-content>
+            <h4 class="text-xl font-bold text-gray-800 mb-4">Prompt Alert</h4>
+            <p class="text-gray-600 mb-4">Please submit some text below:</p>
+            <input type="text" id="prompt-input" placeholder="Enter text here..." class="w-full px-3 py-2 border rounded-lg mb-4 focus:ring-red-500 focus:border-red-500">
+            <div class="flex justify-end gap-3">
+                <button id="prompt-ok" class="px-5 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700">
+                    Submit (OK)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Sandbox Interactivity and Copy Functionality -->
+    <script>
+        // --- Global State ---
+        let isDragging = false;
+        let dragOffsetX, dragOffsetY;
+        const draggable = document.getElementById('draggable');
+        const droppable1 = document.getElementById('droppable-1');
+        const droppable2 = document.getElementById('droppable-2');
+        const dragStatus = document.getElementById('drag-status');
+        const volumeSlider = document.getElementById('volume-slider');
+        const sliderValueDisplay = document.getElementById('slider-value');
+        const fileInput = document.getElementById('file-upload');
+        const mouseActionStatus = document.getElementById('mouse-action-status');
+        const navStatus = document.getElementById('nav-status');
+        const alertStatus = document.getElementById('alert-status');
+
+        // --- Utility Functions ---
+        
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = modal.querySelector('[data-modal-content]');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('opacity-0', 'scale-95');
+                content.classList.add('opacity-100', 'scale-100');
+            }, 10);
+        }
+
+        function hideModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = modal.querySelector('[data-modal-content]');
+            content.classList.remove('opacity-100', 'scale-100');
+            content.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- Sandbox Interactivity Logic ---
+
+        // Login Logic (remains the same)
+        document.getElementById('login-button').addEventListener('click', () => {
+            const user = document.getElementById('username-field').value;
+            const pass = document.getElementById('password-field').value;
+            const status = document.getElementById('login-status');
+            
+            if (user === 'testuser' && pass === 'testpass') {
+                status.textContent = 'Login successful! Welcome, ' + user + '.';
+                status.classList.remove('text-red-700');
+                status.classList.add('text-green-700');
+            } else {
+                status.textContent = 'Login failed. Invalid credentials.';
+                status.classList.remove('text-green-700');
+                status.classList.add('text-red-700');
+            }
+        });
+
+        // Search Logic (remains the same)
+        document.getElementById('search-button').addEventListener('click', () => {
+            const query = document.getElementById('search-box').value.trim();
+            document.getElementById('search-result').textContent = `Searching for: ${query}`;
+        });
+
+        // Dropdown Logic (remains the same)
+        document.getElementById('country-select').addEventListener('change', (e) => {
+            document.getElementById('select-status').textContent = `Selected country: ${e.target.options[e.target.selectedIndex].text}`;
+        });
+        
+        // Radio Button Logic (remains the same)
+        document.querySelectorAll('input[name="group-1"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.getElementById('radio-status').textContent = `Selected: ${e.target.value}`;
+            });
+        });
+
+
+        // Date Picker Logic (remains the same)
+        document.getElementById('date-input').addEventListener('change', (e) => {
+             document.getElementById('date-status').textContent = `Date set to: ${e.target.value}`;
+        });
+
+        // Slider Logic (remains the same)
+        volumeSlider.addEventListener('input', (e) => {
+            sliderValueDisplay.textContent = `Value: ${e.target.value}`;
+        });
+
+        // File Upload Simulation Logic (remains the same)
+        fileInput.addEventListener('change', (e) => {
+            const fileName = e.target.files.length > 0 ? e.target.files[0].name : 'No file selected.';
+            document.getElementById('file-status').textContent = `File selected: ${fileName}`;
+        });
+
+        // --- Alert/Modal Logic (NEW) ---
+        
+        // Simple Alert Handlers
+        document.getElementById('show-simple-alert').addEventListener('click', () => showModal('simple-modal'));
+        document.getElementById('simple-ok').addEventListener('click', () => {
+            alertStatus.textContent = 'Alert Action Status: Simple Alert: Accepted';
+            hideModal('simple-modal');
+        });
+
+        // Confirmation Alert Handlers
+        document.getElementById('show-confirm-alert').addEventListener('click', () => showModal('confirm-modal'));
+        document.getElementById('confirm-ok').addEventListener('click', () => {
+            alertStatus.textContent = 'Alert Action Status: Confirmation Alert: Accepted (OK)';
+            hideModal('confirm-modal');
+        });
+        document.getElementById('confirm-cancel').addEventListener('click', () => {
+            alertStatus.textContent = 'Alert Action Status: Confirmation Alert: Dismissed (Cancel)';
+            hideModal('confirm-modal');
+        });
+
+        // Prompt Alert Handlers
+        document.getElementById('show-prompt-alert').addEventListener('click', () => showModal('prompt-modal'));
+        document.getElementById('prompt-ok').addEventListener('click', () => {
+            const inputVal = document.getElementById('prompt-input').value || "(no text submitted)";
+            alertStatus.textContent = `Alert Action Status: Prompt Alert: Accepted with text: ${inputVal}`;
+            document.getElementById('prompt-input').value = ""; // Clear input after submission
+            hideModal('prompt-modal');
+        });
+
+        // --- Mouse Action Logic (remains the same) ---
+        
+        // Double Click handler
+        document.getElementById('double-click-btn').addEventListener('dblclick', () => {
+            mouseActionStatus.textContent = 'Action Asserted: Double Click Performed!';
+            mouseActionStatus.classList.remove('text-indigo-700', 'text-pink-700');
+            mouseActionStatus.classList.add('text-green-700');
+        });
+
+        // Right-click / Context Menu handler
+        document.getElementById('right-click-btn').addEventListener('contextmenu', (e) => {
+            e.preventDefault(); // Prevent native context menu from showing
+            mouseActionStatus.textContent = 'Action Asserted: Right Click (Context Click) Performed!';
+            mouseActionStatus.classList.remove('text-indigo-700', 'text-green-700');
+            mouseActionStatus.classList.add('text-pink-700');
+        });
+        
+        // Handle single click reset for mouse action status
+        document.getElementById('double-click-btn').addEventListener('click', () => {
+             mouseActionStatus.textContent = 'Action: Single Click Registered.';
+             mouseActionStatus.classList.remove('text-green-700', 'text-pink-700');
+             mouseActionStatus.classList.add('text-indigo-700');
+        });
+
+        // --- Navigation Status Logic (remains the same) ---
+        
+        document.getElementById('nav-link-1').addEventListener('click', (e) => {
+             navStatus.textContent = 'URL hash changed! Test driver.back() now.';
+             navStatus.classList.add('font-bold');
+        });
+        document.getElementById('external-link-2').addEventListener('click', (e) => {
+             navStatus.textContent = 'External link opened in new tab. WebDriver must switch!';
+             navStatus.classList.add('font-bold');
+        });
+
+        document.getElementById('nav-back-btn').addEventListener('click', () => {
+             navStatus.textContent = 'Simulate Back command clicked.';
+             navStatus.classList.remove('font-bold');
+        });
+        document.getElementById('nav-forward-btn').addEventListener('click', () => {
+             navStatus.textContent = 'Simulate Forward command clicked.';
+             navStatus.classList.remove('font-bold');
+        });
+
+        // --- Drag and Drop Logic (UPDATED for 2 targets and dynamic hover) ---
+        
+        const updateDragPosition = (x, y) => {
+            draggable.style.left = `${x}px`;
+            draggable.style.top = `${y}px`;
+        };
+        
+        const resetDroppables = () => {
+            droppable1.classList.remove('dropped-success', 'hovering');
+            droppable2.classList.remove('dropped-failure', 'hovering');
+        };
+
+        draggable.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            draggable.style.cursor = 'grabbing';
+            dragOffsetX = e.clientX - draggable.getBoundingClientRect().left;
+            dragOffsetY = e.clientY - draggable.getBoundingClientRect().top;
+            draggable.style.transition = 'none'; // Disable transition during drag
+            resetDroppables();
+            dragStatus.textContent = "Drag started...";
+        });
+        
+        // Helper function to check if the cursor is over a target
+        const isCursorOver = (clientX, clientY, targetRect) => {
+            return clientX > targetRect.left && clientX < targetRect.right &&
+                   clientY > targetRect.top && clientY < targetRect.bottom;
+        };
+        
+        // Helper function to check if the draggable element overlaps the target
+        const isOverlapping = (draggableRect, targetRect) => {
+             return draggableRect.left < targetRect.right &&
+                    draggableRect.right > targetRect.left &&
+                    draggableRect.top < targetRect.bottom &&
+                    draggableRect.bottom > targetRect.top;
+        };
+
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const sandbox = document.querySelector('.sandbox-area').getBoundingClientRect();
+            let newX = e.clientX - sandbox.left - dragOffsetX;
+            let newY = e.clientY - sandbox.top - dragOffsetY;
+
+            // Keep element within sandbox bounds
+            newX = Math.max(0, Math.min(newX, sandbox.width - draggable.offsetWidth));
+            newY = Math.max(0, Math.min(newY, sandbox.height - draggable.offsetHeight));
+            
+            updateDragPosition(newX, newY);
+
+            // Dynamic Hover Check
+            const targetRect1 = droppable1.getBoundingClientRect();
+            const targetRect2 = droppable2.getBoundingClientRect();
+            
+            const over1 = isCursorOver(e.clientX, e.clientY, targetRect1);
+            const over2 = isCursorOver(e.clientX, e.clientY, targetRect2);
+
+            // Toggle hovering class for visual feedback
+            droppable1.classList.toggle('hovering', over1);
+            droppable2.classList.toggle('hovering', over2);
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (!isDragging) return;
+            isDragging = false;
+            draggable.style.cursor = 'grab';
+            draggable.style.transition = 'left 0.2s, top 0.2s, background-color 0.2s';
+            
+            const draggableRect = draggable.getBoundingClientRect();
+            const rect1 = droppable1.getBoundingClientRect();
+            const rect2 = droppable2.getBoundingClientRect();
+            
+            // Remove hovering visual on drop
+            droppable1.classList.remove('hovering');
+            droppable2.classList.remove('hovering');
+
+            if (isOverlapping(draggableRect, rect1)) {
+                // Target 1: Success
+                droppable1.classList.add('dropped-success');
+                dragStatus.textContent = "Dropped successfully onto Target 1 (Success)!";
+                draggable.style.backgroundColor = '#10b981'; // Emerald 500
+            } else if (isOverlapping(draggableRect, rect2)) {
+                // Target 2: Failure simulation
+                droppable2.classList.add('dropped-failure');
+                dragStatus.textContent = "Dropped onto Target 2 (Failure)!";
+                draggable.style.backgroundColor = '#ef4444'; // Red 500
+            } else {
+                dragStatus.textContent = "Drop outside targets.";
+                draggable.style.backgroundColor = '#f97316'; // Orange
+            }
+        });
+
+
+        // --- Copy Code Functionality (remains the same) ---
+
+        function copyCode(snippetId) {
+            const codeElement = document.getElementById(snippetId);
+            const textToCopy = codeElement.textContent;
+
+            // Use execCommand('copy') as navigator.clipboard might not work in some environments
+            const textArea = document.createElement("textarea");
+            textArea.value = textToCopy;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                // Provide visual feedback (not using alert())
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy text: ', err);
+            }
+            document.body.removeChild(textArea);
+        }
+    </script>
+</body>
+</html>
