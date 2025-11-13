@@ -5,7 +5,7 @@
 
 ---
 
-## 🌐 Overview  
+## 🌐 Overview
 
 **FuzayelQA** is a functional testing sandbox designed for hands-on automation practice.  
 It simulates a real-world web application with multiple UI components — login, search, tables, dropdowns, file uploads, alerts, iFrames, and more — enabling you to test every common automation scenario.
