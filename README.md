@@ -1,4 +1,4 @@
-# 🧪 FuzayelQA
+# 🧪 FuzayelQA 
 ### Comprehensive SQA Functional Testing Sandbox for WebDriver & Pytest Practice  
 
 > 🚀 A full-featured **automation testing playground** built to help QA engineers, testers, and students practice Selenium WebDriver and Pytest concepts in a controlled sandbox environment.
